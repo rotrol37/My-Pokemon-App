@@ -11,17 +11,17 @@ const fetchPokemons = async () => {
     );
     for (const pokemon of pokemons) {
       const pokemonItem = document.createElement("div");
-      pokemonItem.classList.add("card", "w-28", "h-40", "cursor-pointer");
+      pokemonItem.classList.add("card", "cursor-pointer");
       pokemonItem.innerHTML = `
         <img 
-          class="card-back w-full h-full rounded-xl border-4 border-red-500" 
-          src="/images/PokeBall.webp"
-          alt="card back"
-        />
-        <img 
-          class="card-front w-full h-full rounded-xl border-4 border-blue-400 bg-white" 
+          class="card-front-face"
           src="${pokemon.sprites.other["official-artwork"].front_default}"
           alt="${pokemon.name}"
+        />
+        <img 
+          class="card-back-face"
+          src="/images/PokeBall.webp"
+          alt="card back"
         />
       `;
       gameSpace.appendChild(pokemonItem);
@@ -31,4 +31,13 @@ const fetchPokemons = async () => {
   }
 };
 
-fetchPokemons();
+const loadPage = async () => {
+  await fetchPokemons();
+  document.querySelectorAll(".card").forEach((card) => {
+    card.addEventListener("click", function () {
+      this.classList.toggle("flip");
+    });
+  });
+};
+
+loadPage();
