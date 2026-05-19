@@ -3,9 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <title>Document</title>
   </head>
-  <body>
+  <body
+    class="min-h-screen flex flex-col items-center justify-center gap-8 p-8"
+  >
     <mark><%= name %></mark>
+    <div id="game-space" class="flex flex-wrap gap-5 justify-center">
+      <!-- <img class="back" src="/images/PokeBall.webp" />
+      <img
+        class="front"
+        src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+      /> -->
+    </div>
+    <script src="script/code.js"></script>
   </body>
 </html>
