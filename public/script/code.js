@@ -3,12 +3,17 @@ const gameSpace = document.getElementById("game-space");
 let firstCardImg = undefined;
 let secondCardImg = undefined;
 let locked = false;
+let clickCount = 0;
+let pairsMatched = 0;
+const totalPairs = 3;
 
 const onCardClick = async function () {
   if (locked) return;
   if (this.id == firstCardImg?.parentNode.id) return;
 
   this.classList.toggle("flip");
+  clickCount++;
+  document.getElementById("click-count").innerText = clickCount;
 
   if (!firstCardImg) {
     firstCardImg = this.querySelector(".card-front-face");
@@ -22,6 +27,15 @@ const onCardClick = async function () {
         secondCardImg.parentNode.removeEventListener("click", onCardClick);
         firstCardImg.parentNode.style.visibility = "hidden";
         secondCardImg.parentNode.style.visibility = "hidden";
+        pairsMatched++;
+        document.getElementById("pairs-matched").innerText = pairsMatched;
+        document.getElementById("pairs-left").innerText =
+          totalPairs - pairsMatched;
+
+        if (pairsMatched === totalPairs) {
+          console.log("you Win!");
+        }
+
         resolve();
       } else {
         setTimeout(() => {
