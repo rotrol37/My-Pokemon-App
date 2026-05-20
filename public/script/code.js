@@ -7,7 +7,15 @@ let clickCount = 0;
 let pairsMatched = 0;
 let timeLeft = 60;
 let timerInterval = undefined;
-const totalPairs = 3;
+
+const difficulties = {
+  easy: { pairs: 3, time: 60 },
+  medium: { pairs: 4, time: 45 },
+  hard: { pairs: 6, time: 30 },
+};
+
+let currentDifficulty = difficulties.easy;
+let totalPairs = currentDifficulty.pairs;
 
 const startTimer = () => {
   timerInterval = setInterval(() => {
@@ -70,7 +78,10 @@ const onCardClick = async function () {
 const fetchPokemons = async () => {
   try {
     let cardIndex = 1;
-    const pokemonIds = [3, 3, 15, 15, 32, 32];
+    const allIds = [1, 3, 4, 6, 7, 15, 25, 29, 32, 39, 52, 54];
+    const selectedIds = allIds.slice(0, totalPairs);
+    const pokemonIds = [...selectedIds, ...selectedIds];
+
     const pokemons = await Promise.all(
       pokemonIds.map(async (id) => {
         const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`);
@@ -109,12 +120,13 @@ const resetGame = async () => {
   locked = true;
   clickCount = 0;
   pairsMatched = 0;
-  timeLeft = 60;
+  timeLeft = currentDifficulty.time;
+  totalPairs = currentDifficulty.pairs;
 
   document.getElementById("click-count").innerText = 0;
   document.getElementById("pairs-matched").innerText = 0;
   document.getElementById("pairs-left").innerText = totalPairs;
-  document.getElementById("timer").innerText = 60;
+  document.getElementById("timer").innerText = timeLeft;
 
   await fetchPokemons();
   document.querySelectorAll(".card").forEach((card) => {
@@ -127,6 +139,20 @@ const loadPage = async () => {
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
+
+  document.getElementById("easy-btn").addEventListener("click", async () => {
+    currentDifficulty = difficulties.easy;
+    await resetGame();
+  });
+  document.getElementById("medium-btn").addEventListener("click", async () => {
+    currentDifficulty = difficulties.medium;
+    await resetGame();
+  });
+  document.getElementById("hard-btn").addEventListener("click", async () => {
+    currentDifficulty = difficulties.hard;
+    await resetGame();
+  });
+
   document.getElementById("start-btn").addEventListener("click", () => {
     locked = false;
     startTimer();
