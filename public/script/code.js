@@ -106,7 +106,7 @@ const resetGame = async () => {
   gameSpace.innerHTML = "";
   firstCardImg = undefined;
   secondCardImg = undefined;
-  locked = false;
+  locked = true;
   clickCount = 0;
   pairsMatched = 0;
   timeLeft = 60;
@@ -120,7 +120,6 @@ const resetGame = async () => {
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
-  startTimer();
 };
 
 const loadPage = async () => {
@@ -128,8 +127,10 @@ const loadPage = async () => {
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
-  startTimer();
-
+  document.getElementById("start-btn").addEventListener("click", () => {
+    locked = false;
+    startTimer();
+  });
   document.getElementById("reset-btn").addEventListener("click", resetGame);
 };
 
