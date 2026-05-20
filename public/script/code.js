@@ -134,11 +134,33 @@ const resetGame = async () => {
   });
 };
 
+const applyTheme = (theme) => {
+  if (theme === "dark") {
+    document.body.classList.add("dark");
+    document.getElementById("theme-btn").innerText = "Light Mode";
+  } else {
+    document.body.classList.remove("dark");
+    document.getElementById("theme-btn").innerText = "Dark Mode";
+  }
+};
+
+const toggleTheme = () => {
+  const currentTheme = localStorage.getItem("theme") || "light";
+  const targetTheme = currentTheme === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", targetTheme);
+  applyTheme(targetTheme);
+};
+
 const loadPage = async () => {
   await fetchPokemons();
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
+
+  const savedTheme = localStorage.getItem("theme") || "light";
+  applyTheme(savedTheme);
+
+  document.getElementById("theme-btn").addEventListener("click", toggleTheme);
 
   document.getElementById("easy-btn").addEventListener("click", async () => {
     currentDifficulty = difficulties.easy;
