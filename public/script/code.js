@@ -21,6 +21,11 @@ const startTimer = () => {
   timerInterval = setInterval(() => {
     timeLeft--;
     document.getElementById("timer").innerText = timeLeft;
+
+    if (timeLeft === Math.floor(currentDifficulty.time / 2)) {
+      powerUp();
+    }
+
     if (timeLeft === 0) {
       clearInterval(timerInterval);
       locked = true;
@@ -149,6 +154,27 @@ const toggleTheme = () => {
   const targetTheme = currentTheme === "dark" ? "light" : "dark";
   localStorage.setItem("theme", targetTheme);
   applyTheme(targetTheme);
+};
+
+const powerUp = () => {
+  if (firstCardImg) {
+    firstCardImg.parentNode.classList.remove("flip");
+    firstCardImg = undefined;
+  }
+
+  locked = true;
+  document.querySelectorAll(".card").forEach((card) => {
+    card.classList.add("flip");
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll(".card").forEach((card) => {
+      if (card.style.visibility !== "hidden") {
+        card.classList.remove("flip");
+      }
+    });
+    locked = false;
+  }, 3000);
 };
 
 const loadPage = async () => {
