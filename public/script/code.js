@@ -1,8 +1,47 @@
 const gameSpace = document.getElementById("game-space");
 
+let firstCardImg = undefined;
+let secondCardImg = undefined;
+let locked = false;
+
+const onCardClick = async function () {
+  if (locked) return;
+  if (this.id == firstCardImg?.parentNode.id) return;
+
+  this.classList.toggle("flip");
+
+  if (!firstCardImg) {
+    firstCardImg = this.querySelector(".card-front-face");
+  } else {
+    secondCardImg = this.querySelector(".card-front-face");
+    locked = true;
+
+    await new Promise((resolve) => {
+      if (firstCardImg.src === secondCardImg.src) {
+        firstCardImg.parentNode.removeEventListener("click", onCardClick);
+        secondCardImg.parentNode.removeEventListener("click", onCardClick);
+        firstCardImg.parentNode.style.visibility = "hidden";
+        secondCardImg.parentNode.style.visibility = "hidden";
+        resolve();
+      } else {
+        setTimeout(() => {
+          firstCardImg.parentNode.classList.remove("flip");
+          secondCardImg.parentNode.classList.remove("flip");
+          resolve();
+        }, 1000);
+      }
+    });
+
+    locked = false;
+    firstCardImg = undefined;
+    secondCardImg = undefined;
+  }
+};
+
 const fetchPokemons = async () => {
   try {
-    const pokemonIds = [1, 3, 5, 15, 29, 32];
+    let cardIndex = 1;
+    const pokemonIds = [3, 3, 15, 15, 32, 32];
     const pokemons = await Promise.all(
       pokemonIds.map(async (id) => {
         const result = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`);
@@ -12,6 +51,8 @@ const fetchPokemons = async () => {
     for (const pokemon of pokemons) {
       const pokemonItem = document.createElement("div");
       pokemonItem.classList.add("card", "cursor-pointer");
+      pokemonItem.id = `card${cardIndex}`;
+      cardIndex++;
       pokemonItem.innerHTML = `
         <img 
           class="card-front-face"
@@ -34,9 +75,7 @@ const fetchPokemons = async () => {
 const loadPage = async () => {
   await fetchPokemons();
   document.querySelectorAll(".card").forEach((card) => {
-    card.addEventListener("click", function () {
-      this.classList.toggle("flip");
-    });
+    card.addEventListener("click", onCardClick);
   });
 };
 
