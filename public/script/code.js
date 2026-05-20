@@ -101,12 +101,36 @@ const fetchPokemons = async () => {
   }
 };
 
+const resetGame = async () => {
+  clearInterval(timerInterval);
+  gameSpace.innerHTML = "";
+  firstCardImg = undefined;
+  secondCardImg = undefined;
+  locked = false;
+  clickCount = 0;
+  pairsMatched = 0;
+  timeLeft = 60;
+
+  document.getElementById("click-count").innerText = 0;
+  document.getElementById("pairs-matched").innerText = 0;
+  document.getElementById("pairs-left").innerText = totalPairs;
+  document.getElementById("timer").innerText = 60;
+
+  await fetchPokemons();
+  document.querySelectorAll(".card").forEach((card) => {
+    card.addEventListener("click", onCardClick);
+  });
+  startTimer();
+};
+
 const loadPage = async () => {
   await fetchPokemons();
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
   startTimer();
+
+  document.getElementById("reset-btn").addEventListener("click", resetGame);
 };
 
 loadPage();
