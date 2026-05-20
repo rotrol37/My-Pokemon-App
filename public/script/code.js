@@ -5,7 +5,21 @@ let secondCardImg = undefined;
 let locked = false;
 let clickCount = 0;
 let pairsMatched = 0;
+let timeLeft = 60;
+let timerInterval = undefined;
 const totalPairs = 3;
+
+const startTimer = () => {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    document.getElementById("timer").innerText = timeLeft;
+    if (timeLeft === 0) {
+      clearInterval(timerInterval);
+      locked = true;
+      console.log("Game Over!");
+    }
+  }, 1000);
+};
 
 const onCardClick = async function () {
   if (locked) return;
@@ -33,6 +47,7 @@ const onCardClick = async function () {
           totalPairs - pairsMatched;
 
         if (pairsMatched === totalPairs) {
+          clearInterval(timerInterval);
           console.log("you Win!");
         }
 
@@ -91,6 +106,7 @@ const loadPage = async () => {
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
+  startTimer();
 };
 
 loadPage();
