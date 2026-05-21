@@ -10,12 +10,12 @@
   <body
     class="min-h-screen flex flex-col items-center justify-center gap-2 p-4"
   >
-    <mark><%= name %></mark>
+    <h1 class="text-3xl font-bold tracking-widest uppercase"><%= name %></h1>
     <div class="flex gap-8 text-lg font-bold">
       <b>Clicks: <span id="click-count">0</span></b>
       <b>Pairs Matched: <span id="pairs-matched">0</span></b>
       <b>Pairs Left: <span id="pairs-left">3</span></b>
-      <b>Time: <span id="timer">60</span>s</b>
+      <b id="time-text">Time: <span id="timer">30</span>s</b>
     </div>
     <div class="flex gap-4">
       <button
@@ -51,7 +51,55 @@
         Reset
       </button>
     </div>
-    <div id="game-space"></div>
+    <div class="flex items-center gap-4">
+      <div
+        id="win-left"
+        class="hidden flex-col items-center w-[20vw] shrink-0 pr-8"
+      >
+        <img src="/images/You.png" class="w-full" />
+        <img src="/images/Win!.png" class="w-full" />
+      </div>
+
+      <div
+        id="gameover-left"
+        class="hidden flex-col items-center w-[20vw] shrink-0 pr-8"
+      >
+        <img src="/images/Game.png" class="w-full" />
+        <img src="/images/Over.png" class="w-full" />
+      </div>
+
+      <div
+        id="powerup-left"
+        class="hidden flex-col items-center w-[20vw] shrink-0 pr-8"
+      >
+        <img src="/images/Powerup.png" class="w-full" />
+      </div>
+
+      <div id="game-space"></div>
+
+      <div
+        id="win-right"
+        class="hidden flex-col items-center w-[20vw] shrink-0 pl-8"
+      >
+        <img src="/images/You.png" class="w-full" />
+        <img src="/images/Win!.png" class="w-full" />
+      </div>
+
+      <div
+        id="gameover-right"
+        class="hidden flex-col items-center w-[20vw] shrink-0 pl-8"
+      >
+        <img src="/images/Game.png" class="w-full" />
+        <img src="/images/Over.png" class="w-full" />
+      </div>
+
+      <div
+        id="powerup-right"
+        class="hidden flex-col items-center w-[20vw] shrink-0 pl-8"
+      >
+        <img src="/images/powerup.png" class="w-full" />
+      </div>
+    </div>
     <button
       id="theme-btn"
       class="px-4 py-2 bg-gray-700 text-white font-bold rounded-xl cursor-pointer"

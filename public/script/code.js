@@ -1,11 +1,12 @@
 const gameSpace = document.getElementById("game-space");
+const timeDiv = document.getElementById("time-text");
 
 let firstCardImg = undefined;
 let secondCardImg = undefined;
 let locked = false;
 let clickCount = 0;
 let pairsMatched = 0;
-let timeLeft = 60;
+let timeLeft = 30;
 let timerInterval = undefined;
 
 const difficulties = {
@@ -18,6 +19,7 @@ let currentDifficulty = difficulties.easy;
 let totalPairs = currentDifficulty.pairs;
 
 const startTimer = () => {
+  timeDiv.classList.add("text-red-500");
   timerInterval = setInterval(() => {
     timeLeft--;
     document.getElementById("timer").innerText = timeLeft;
@@ -29,7 +31,7 @@ const startTimer = () => {
     if (timeLeft === 0) {
       clearInterval(timerInterval);
       locked = true;
-      console.log("Game Over!");
+      showGameOver();
     }
   }, 1000);
 };
@@ -61,7 +63,7 @@ const onCardClick = async function () {
 
         if (pairsMatched === totalPairs) {
           clearInterval(timerInterval);
-          console.log("you Win!");
+          showWin();
         }
 
         resolve();
@@ -144,6 +146,8 @@ const fetchPokemons = async () => {
 };
 
 const resetGame = async () => {
+  hideGameOver();
+  hideWin();
   clearInterval(timerInterval);
   gameSpace.innerHTML = "";
   firstCardImg = undefined;
@@ -158,12 +162,55 @@ const resetGame = async () => {
   document.getElementById("pairs-matched").innerText = 0;
   document.getElementById("pairs-left").innerText = totalPairs;
   document.getElementById("timer").innerText = timeLeft;
+  timeDiv.classList.remove("text-red-500");
 
   await fetchPokemons();
   applyLayout();
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
+};
+
+const showWin = () => {
+  document.getElementById("win-left").classList.remove("hidden");
+  document.getElementById("win-right").classList.remove("hidden");
+  document.getElementById("win-left").classList.add("flex");
+  document.getElementById("win-right").classList.add("flex");
+};
+
+const hideWin = () => {
+  document.getElementById("win-left").classList.add("hidden");
+  document.getElementById("win-right").classList.add("hidden");
+  document.getElementById("win-left").classList.remove("flex");
+  document.getElementById("win-right").classList.remove("flex");
+};
+
+const showGameOver = () => {
+  document.getElementById("gameover-left").classList.remove("hidden");
+  document.getElementById("gameover-right").classList.remove("hidden");
+  document.getElementById("gameover-left").classList.add("flex");
+  document.getElementById("gameover-right").classList.add("flex");
+};
+
+const hideGameOver = () => {
+  document.getElementById("gameover-left").classList.add("hidden");
+  document.getElementById("gameover-right").classList.add("hidden");
+  document.getElementById("gameover-left").classList.remove("flex");
+  document.getElementById("gameover-right").classList.remove("flex");
+};
+
+const showPowerUp = () => {
+  document.getElementById("powerup-left").classList.remove("hidden");
+  document.getElementById("powerup-right").classList.remove("hidden");
+  document.getElementById("powerup-left").classList.add("flex");
+  document.getElementById("powerup-right").classList.add("flex");
+};
+
+const hidePowerUp = () => {
+  document.getElementById("powerup-left").classList.add("hidden");
+  document.getElementById("powerup-right").classList.add("hidden");
+  document.getElementById("powerup-left").classList.remove("flex");
+  document.getElementById("powerup-right").classList.remove("flex");
 };
 
 const applyTheme = (theme) => {
@@ -190,6 +237,7 @@ const powerUp = () => {
   }
 
   locked = true;
+  showPowerUp();
   document.querySelectorAll(".card").forEach((card) => {
     card.classList.add("flip");
   });
@@ -200,6 +248,7 @@ const powerUp = () => {
         card.classList.remove("flip");
       }
     });
+    hidePowerUp();
     locked = false;
   }, 3000);
 };

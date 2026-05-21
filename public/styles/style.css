@@ -11,7 +11,8 @@ body.dark {
 #game-space {
   display: flex;
   flex-wrap: wrap;
-  width: 40%;
+  width: 40vw;
+  min-width: 40vw;
   margin: auto;
 }
 
