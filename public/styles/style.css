@@ -11,12 +11,11 @@ body.dark {
 #game-space {
   display: flex;
   flex-wrap: wrap;
-  width: 600px;
+  width: 40%;
   margin: auto;
 }
 
 .card {
-  flex-basis: 33.3%;
   position: relative;
   transition-property: transform;
   transition-duration: 1s;

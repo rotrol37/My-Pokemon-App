@@ -9,9 +9,9 @@ let timeLeft = 60;
 let timerInterval = undefined;
 
 const difficulties = {
-  easy: { pairs: 3, time: 60 },
-  medium: { pairs: 4, time: 45 },
-  hard: { pairs: 6, time: 30 },
+  easy: { pairs: 3, time: 30, columns: 3 },
+  medium: { pairs: 6, time: 60, columns: 4 },
+  hard: { pairs: 10, time: 150, columns: 5 },
 };
 
 let currentDifficulty = difficulties.easy;
@@ -52,8 +52,8 @@ const onCardClick = async function () {
       if (firstCardImg.src === secondCardImg.src) {
         firstCardImg.parentNode.removeEventListener("click", onCardClick);
         secondCardImg.parentNode.removeEventListener("click", onCardClick);
-        firstCardImg.parentNode.style.visibility = "hidden";
-        secondCardImg.parentNode.style.visibility = "hidden";
+        firstCardImg.parentNode.dataset.matched = "true";
+        secondCardImg.parentNode.dataset.matched = "true";
         pairsMatched++;
         document.getElementById("pairs-matched").innerText = pairsMatched;
         document.getElementById("pairs-left").innerText =
@@ -80,12 +80,38 @@ const onCardClick = async function () {
   }
 };
 
+const applyLayout = () => {
+  const flexBasis = `${100 / currentDifficulty.columns}%`;
+  document.querySelectorAll(".card").forEach((card) => {
+    card.style.flexBasis = flexBasis;
+  });
+};
+
+const randomIds = (total) => {
+  const allIds = [];
+  while (allIds.length < total) {
+    const randomId = Math.floor(Math.random() * 100) + 1;
+    if (!allIds.includes(randomId)) {
+      allIds.push(randomId);
+    }
+  }
+  return allIds;
+};
+
+const randomInsert = (arr) => {
+  const result = [];
+  for (const item of arr) {
+    const randomIndex = Math.floor(Math.random() * (result.length + 1));
+    result.splice(randomIndex, 0, item);
+  }
+  return result;
+};
+
 const fetchPokemons = async () => {
   try {
     let cardIndex = 1;
-    const allIds = [1, 3, 4, 6, 7, 15, 25, 29, 32, 39, 52, 54];
-    const selectedIds = allIds.slice(0, totalPairs);
-    const pokemonIds = [...selectedIds, ...selectedIds];
+    const allIds = randomIds(totalPairs);
+    const pokemonIds = randomInsert(allIds.concat(allIds));
 
     const pokemons = await Promise.all(
       pokemonIds.map(async (id) => {
@@ -134,6 +160,7 @@ const resetGame = async () => {
   document.getElementById("timer").innerText = timeLeft;
 
   await fetchPokemons();
+  applyLayout();
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
@@ -169,7 +196,7 @@ const powerUp = () => {
 
   setTimeout(() => {
     document.querySelectorAll(".card").forEach((card) => {
-      if (card.style.visibility !== "hidden") {
+      if (!card.dataset.matched) {
         card.classList.remove("flip");
       }
     });
@@ -179,6 +206,7 @@ const powerUp = () => {
 
 const loadPage = async () => {
   await fetchPokemons();
+  applyLayout();
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", onCardClick);
   });
@@ -201,6 +229,7 @@ const loadPage = async () => {
     await resetGame();
   });
 
+  locked = true;
   document.getElementById("start-btn").addEventListener("click", () => {
     locked = false;
     startTimer();
